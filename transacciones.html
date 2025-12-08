@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookChain - Mis Transacciones</title>
+    
+    <style>
+        :root {
+            --primary-color: #5d50e8; 
+            --secondary-color: #2e3047; 
+            --background-color: #f4f7f6;
+            --card-background: #ffffff;
+            --success-color: #50e85d;
+            --warning-color: #e8a050;
+            --danger-color: #e85050;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--secondary-color);
+        }
+
+        .nav-links a {
+            color: white !important; 
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:visited {
+            color: white !important; 
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .metamask-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 20px; 
+            border-radius: 2px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .metamask-btn img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+
+        .container {
+            width: 95%; 
+            max-width: 1300px; 
+            margin: 40px auto;
+        }
+
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 10; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); 
+        }
+
+        .modal-content {
+            background-color: #333940; 
+            margin: 15% auto; 
+            padding: 30px;
+            border: 1px solid #555;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .metamask-connect-btn {
+            background-color: #E27625; 
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box; 
+        }
+        
+        .close-btn {
+            margin-top: 15px;
+            background-color: transparent;
+            border: 1px solid #888;
+            color: #888;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Estilos específicos para transacciones */
+        .tx-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .tx-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .tx-header h2 {
+            margin: 0;
+            color: var(--secondary-color);
+        }
+
+        .refresh-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            opacity: 0.9;
+        }
+
+        .tx-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tx-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .tx-card.compra {
+            border-left-color: var(--success-color);
+        }
+
+        .tx-card.renta {
+            border-left-color: var(--warning-color);
+        }
+
+        .tx-card.compra_fisica {
+            border-left-color: #9b59b6;
+        }
+
+        .tx-type {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tx-type.compra {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .tx-type.renta {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .tx-type.compra_fisica {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        .tx-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .tx-detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tx-detail-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .tx-detail-value {
+            font-weight: bold;
+            color: var(--secondary-color);
+            word-break: break-all;
+        }
+
+        .tx-hash-link {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .tx-hash-link:hover {
+            text-decoration: underline;
+        }
+
+        .tx-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .tx-status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .tx-status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .tx-status.failed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">📚 BookChain</div>
+        <nav class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="transacciones.html" style="color: #5d50e8 !important;">Transacciones</a>
+        </nav>
+        <div id="walletArea">
+            <button class="metamask-btn" onclick="openModal()">
+                <img src="metamask_logo.png" alt="MetaMask Logo"> 
+                Conectar Billetera
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTx">-</div>
+                <div class="stat-label">Total Transacciones</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalCompras">-</div>
+                <div class="stat-label">Compras NFT</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalRentas">-</div>
+                <div class="stat-label">Rentas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalFisicas">-</div>
+                <div class="stat-label">Compras Físicas</div>
+            </div>
+        </div>
+
+        <div class="tx-container">
+            <div class="tx-header">
+                <h2>🧾 Historial de Transacciones</h2>
+                <button class="refresh-btn" onclick="loadTransactions()">
+                    🔄 Actualizar
+                </button>
+            </div>
+
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterTransactions('all', this)">Todas</button>
+                <button class="filter-btn" onclick="filterTransactions('compra', this)">Compras NFT</button>
+                <button class="filter-btn" onclick="filterTransactions('renta', this)">Rentas</button>
+                <button class="filter-btn" onclick="filterTransactions('compra_fisica', this)">Compras Físicas</button>
+            </div>
+
+            <div id="transactionsContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔗</div>
+                    <h3>Conecta tu billetera</h3>
+                    <p>Para ver tu historial de transacciones, primero conecta tu billetera MetaMask.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Conectar Billetera</h2>
+            <p>Selecciona tu billetera para interactuar con la librería NFT.</p>
+            
+            <button class="metamask-connect-btn" onclick="connectMetaMask()">
+                <img src="metamask_logo.png" alt="MetaMask Logo" style="width: 24px; height: 24px; margin-right: 10px;">
+                Conectar con MetaMask
+            </button>
+
+            <button class="close-btn" onclick="closeModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de detalle de transacción -->
+    <div id="txDetailModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2>🧾 Detalle de Transacción</h2>
+            <div id="txDetailContent"></div>
+            <button class="close-btn" onclick="closeTxDetailModal()">Cerrar</button>
+        </div>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.2.0/ethers.umd.min.js"></script> 
+<script src="./app.js"></script>
+<script>
+    // Almacenamiento local de transacciones
+    let allTransactions = [];
+    let currentFilter = 'all';
+
+    // Cargar transacciones al conectar wallet
+    async function loadTransactions() {
+        const container = document.getElementById('transactionsContainer');
+        
+        if (!window.userAddress) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔗</div>
+                    <h3>Conecta tu billetera</h3>
+                    <p>Para ver tu historial de transacciones, primero conecta tu billetera MetaMask.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+        `;
+
+        try {
+            // Cargar transacciones guardadas localmente
+            const savedTx = localStorage.getItem('bookchain_transactions_' + window.userAddress.toLowerCase());
+            allTransactions = savedTx ? JSON.parse(savedTx) : [];
+
+            // También intentar obtener del blockchain (eventos)
+            await fetchBlockchainTransactions();
+
+            displayTransactions();
+            updateStats();
+
+        } catch (error) {
+            console.error('Error cargando transacciones:', error);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <h3>Error al cargar</h3>
+                    <p>No se pudieron cargar las transacciones. Intenta de nuevo.</p>
+                </div>
+            `;
+        }
+    }
+
+    async function fetchBlockchainTransactions() {
+        if (!window.userProvider || !window.userAddress) return;
+
+        try {
+            const bookStoreContract = new ethers.Contract(
+                BOOKSTORE_ADDRESS, 
+                CONTRACT_ABI, 
+                window.userProvider
+            );
+
+            // Nota: Para obtener eventos históricos necesitarías un ABI con eventos
+            // Por ahora usamos las transacciones guardadas localmente
+            console.log('✅ Conectado al contrato para buscar transacciones');
+
+        } catch (error) {
+            console.error('Error fetching blockchain transactions:', error);
+        }
+    }
+
+    function displayTransactions() {
+        const container = document.getElementById('transactionsContainer');
+        
+        let filteredTx = allTransactions;
+        if (currentFilter !== 'all') {
+            filteredTx = allTransactions.filter(tx => tx.type === currentFilter);
+        }
+
+        if (filteredTx.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <h3>No hay transacciones</h3>
+                    <p>Aún no has realizado ${currentFilter === 'all' ? 'ninguna transacción' : currentFilter === 'compra' ? 'compras' : 'rentas'}.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Ordenar por fecha (más reciente primero)
+        filteredTx.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        let html = '';
+        filteredTx.forEach((tx, index) => {
+            const typeClass = tx.type;
+            let typeLabel;
+            switch(tx.type) {
+                case 'compra':
+                    typeLabel = '🛒 COMPRA NFT';
+                    break;
+                case 'renta':
+                    typeLabel = '📖 RENTA';
+                    break;
+                case 'compra_fisica':
+                    typeLabel = '📦 COMPRA FÍSICA';
+                    break;
+                default:
+                    typeLabel = '📋 TRANSACCIÓN';
+            }
+            
+            const statusClass = tx.status === 'success' ? 'success' : tx.status === 'pending' ? 'pending' : 'failed';
+            const statusIcon = tx.status === 'success' ? '✅' : tx.status === 'pending' ? '⏳' : '❌';
+            const statusText = tx.status === 'success' ? 'Completada' : tx.status === 'pending' ? 'Pendiente' : 'Fallida';
+            
+            // Determinar si es transacción blockchain o física
+            const isBlockchain = tx.type !== 'compra_fisica';
+            const hashDisplay = isBlockchain 
+                ? `<a href="https://sepolia.etherscan.io/tx/${tx.hash}" target="_blank" class="tx-hash-link">
+                        ${tx.hash.substring(0, 10)}...${tx.hash.substring(tx.hash.length - 8)}
+                   </a>`
+                : `<span style="color: #9b59b6;">${tx.hash}</span>`;
+
+            html += `
+                <div class="tx-card ${typeClass}" onclick="showTxDetail(${index})">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <span class="tx-type ${typeClass}">${typeLabel}</span>
+                        <span class="tx-status ${statusClass}">${statusIcon} ${statusText}</span>
+                    </div>
+                    
+                    <div class="tx-details">
+                        <div class="tx-detail-item">
+                            <span class="tx-detail-label">${tx.type === 'compra_fisica' ? 'Libro' : 'Token ID'}</span>
+                            <span class="tx-detail-value">${tx.type === 'compra_fisica' ? (tx.bookTitle || 'Libro físico') : '#' + tx.tokenId}</span>
+                        </div>
+                        <div class="tx-detail-item">
+                            <span class="tx-detail-label">Monto</span>
+                            <span class="tx-detail-value">${tx.amount}${isBlockchain ? ' ETH' : ''}</span>
+                        </div>
+                        <div class="tx-detail-item">
+                            <span class="tx-detail-label">Fecha</span>
+                            <span class="tx-detail-value">${formatDate(tx.date)}</span>
+                        </div>
+                        <div class="tx-detail-item">
+                            <span class="tx-detail-label">${isBlockchain ? 'Hash' : 'Orden'}</span>
+                            <span class="tx-detail-value">
+                                ${hashDisplay}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function updateStats() {
+        const totalTx = allTransactions.length;
+        const compras = allTransactions.filter(tx => tx.type === 'compra').length;
+        const rentas = allTransactions.filter(tx => tx.type === 'renta').length;
+        const fisicas = allTransactions.filter(tx => tx.type === 'compra_fisica').length;
+
+        document.getElementById('totalTx').textContent = totalTx;
+        document.getElementById('totalCompras').textContent = compras;
+        document.getElementById('totalRentas').textContent = rentas;
+        document.getElementById('totalFisicas').textContent = fisicas;
+    }
+
+    function filterTransactions(filter, btn) {
+        currentFilter = filter;
+        
+        // Actualizar botones activos
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        displayTransactions();
+    }
+
+    function showTxDetail(index) {
+        const tx = allTransactions[index];
+        const modal = document.getElementById('txDetailModal');
+        const content = document.getElementById('txDetailContent');
+
+        let typeLabel;
+        switch(tx.type) {
+            case 'compra':
+                typeLabel = '🛒 Compra NFT';
+                break;
+            case 'renta':
+                typeLabel = '📖 Renta Digital';
+                break;
+            case 'compra_fisica':
+                typeLabel = '📦 Compra Física';
+                break;
+            default:
+                typeLabel = '📋 Transacción';
+        }
+        
+        const statusIcon = tx.status === 'success' ? '✅' : tx.status === 'pending' ? '⏳' : '❌';
+        const isBlockchain = tx.type !== 'compra_fisica';
+
+        let detailsHtml = `
+            <div style="text-align: left; margin: 20px 0;">
+                <p><strong>Tipo:</strong> ${typeLabel}</p>
+        `;
+        
+        if (tx.type === 'compra_fisica') {
+            detailsHtml += `
+                <p><strong>Libro:</strong> ${tx.bookTitle || 'Libro físico'}</p>
+                <p><strong>Monto:</strong> ${tx.amount}</p>
+                <p><strong>Estado:</strong> ${statusIcon} ${tx.status}</p>
+                <p><strong>Fecha:</strong> ${formatDate(tx.date)}</p>
+                ${tx.shippingAddress ? `<p><strong>Dirección de envío:</strong> ${tx.shippingAddress}</p>` : ''}
+                ${tx.phone ? `<p><strong>Teléfono:</strong> ${tx.phone}</p>` : ''}
+                <p><strong>Número de orden:</strong></p>
+                <p style="word-break: break-all; font-size: 0.85em; background: #f5f5f5; padding: 10px; border-radius: 5px; color: #9b59b6;">
+                    ${tx.hash}
+                </p>
+            `;
+        } else {
+            detailsHtml += `
+                <p><strong>Token ID:</strong> #${tx.tokenId}</p>
+                <p><strong>Monto:</strong> ${tx.amount} ETH</p>
+                <p><strong>Estado:</strong> ${statusIcon} ${tx.status}</p>
+                <p><strong>Fecha:</strong> ${formatDate(tx.date)}</p>
+                ${tx.type === 'renta' ? `<p><strong>Duración:</strong> 7 días</p>` : ''}
+                <p><strong>Hash completo:</strong></p>
+                <p style="word-break: break-all; font-size: 0.85em; background: #f5f5f5; padding: 10px; border-radius: 5px;">
+                    ${tx.hash}
+                </p>
+                <a href="https://sepolia.etherscan.io/tx/${tx.hash}" target="_blank" 
+                   style="display: inline-block; margin-top: 15px; background: var(--primary-color); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+                    🔍 Ver en Etherscan
+                </a>
+            `;
+        }
+        
+        detailsHtml += `</div>`;
+        content.innerHTML = detailsHtml;
+
+        modal.style.display = 'block';
+    }
+
+    function closeTxDetailModal() {
+        document.getElementById('txDetailModal').style.display = 'none';
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-MX', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    // Función global para guardar transacciones (llamada desde app.js)
+    window.saveTransaction = function(txData) {
+        if (!window.userAddress) return;
+        
+        const key = 'bookchain_transactions_' + window.userAddress.toLowerCase();
+        const saved = localStorage.getItem(key);
+        const transactions = saved ? JSON.parse(saved) : [];
+        
+        transactions.push({
+            ...txData,
+            date: new Date().toISOString()
+        });
+        
+        localStorage.setItem(key, JSON.stringify(transactions));
+        console.log('✅ Transacción guardada:', txData);
+    };
+
+    // Cargar transacciones cuando la wallet se conecta
+    const originalConnectMetaMask = window.connectMetaMask;
+    window.connectMetaMask = async function() {
+        await originalConnectMetaMask();
+        setTimeout(loadTransactions, 500);
+    };
+
+    // Verificar si ya está conectado al cargar
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (window.userAddress) {
+                loadTransactions();
+            }
+        }, 1000);
+    });
+
+    // Cerrar modales al hacer clic fuera
+    window.onclick = function(event) {
+        const walletModal = document.getElementById('walletModal');
+        const txModal = document.getElementById('txDetailModal');
+        if (event.target === walletModal) {
+            walletModal.style.display = 'none';
+        }
+        if (event.target === txModal) {
+            txModal.style.display = 'none';
+        }
+    };
+</script>
+
+</body>
+</html>

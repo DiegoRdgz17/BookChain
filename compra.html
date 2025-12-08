@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookChain - Comprar</title>
+    
+    <style>
+        :root {
+            --primary-color: #5d50e8; 
+            --secondary-color: #2e3047; 
+            --background-color: #f4f7f6;
+            --card-background: #ffffff;
+            --success-color: #50e85d;
+            --warning-color: #e8a050;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--secondary-color);
+        }
+
+        .nav-links a {
+            color: white !important; 
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:visited {
+            color: white !important; 
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .metamask-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 20px; 
+            border-radius: 2px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .metamask-btn img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+
+        .container {
+            width: 95%; 
+            max-width: 1300px; 
+            margin: 40px auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            margin: 0;
+            color: var(--secondary-color);
+        }
+
+        .book-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 25px; 
+        }
+
+        .book-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            background-color: #f0f0f0;
+        }
+
+        .book-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+            color: var(--secondary-color);
+            line-height: 1.3;
+        }
+
+        .book-info .author {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, var(--primary-color), #7b6fec);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95em;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .price-tag.physical {
+            background: linear-gradient(135deg, var(--warning-color), #f0b060);
+        }
+
+        .book-buttons {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+        }
+
+        .action-btn:hover {
+            background-color: #4a3ed6;
+            transform: scale(1.02);
+        }
+
+        .action-btn.physical {
+            background-color: var(--warning-color);
+        }
+
+        .action-btn.physical:hover {
+            background-color: #d69040;
+        }
+
+        .action-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 10; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); 
+        }
+
+        .modal-content {
+            background-color: #333940; 
+            margin: 10% auto; 
+            padding: 30px;
+            border: 1px solid #555;
+            max-width: 450px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .metamask-connect-btn {
+            background-color: #E27625; 
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box; 
+        }
+        
+        .close-btn {
+            margin-top: 15px;
+            background-color: transparent;
+            border: 1px solid #888;
+            color: #888;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .physical-form input {
+            width: 80%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background-color: #444;
+            color: white;
+            font-size: 1em;
+        }
+
+        .physical-form input::placeholder {
+            color: #aaa;
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-books {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .no-books-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+
+        .badge.physical {
+            background-color: var(--warning-color);
+        }
+
+        .book-card-wrapper {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">📚 BookChain</div>
+        <nav class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="compra.html" style="color: #5d50e8 !important;">Compra</a>
+        </nav>
+        <div id="walletArea">
+            <button class="metamask-btn" onclick="openModal()">
+                <img src="metamask_logo.png" alt="MetaMask Logo"> 
+                Conectar Billetera
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>🛒 Comprar Libros</h2>
+        </div>
+
+        <div id="booksContainer" class="book-grid">
+            <div class="loading-container">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Wallet -->
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Conectar Billetera</h2>
+            <p>Selecciona tu billetera para interactuar con la librería NFT.</p>
+            
+            <button class="metamask-connect-btn" onclick="connectMetaMask()">
+                <img src="metamask_logo.png" alt="MetaMask Logo" style="width: 24px; height: 24px; margin-right: 10px;">
+                Conectar con MetaMask
+            </button>
+
+            <button class="close-btn" onclick="closeModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal Compra Física -->
+    <div id="physicalModal" class="modal">
+        <div class="modal-content">
+            <h2>📦 Compra Física</h2>
+            <p id="physicalBookTitle">Ingresa tus datos de envío</p>
+            
+            <div class="physical-form">
+                <input type="text" id="buyerName" placeholder="Nombre completo" required>
+                <input type="text" id="city" placeholder="Ciudad" required>
+                <input type="text" id="cp" placeholder="Código Postal" required>
+                <input type="text" id="address" placeholder="Dirección de Envío" required>
+                <input type="text" id="phone" placeholder="Teléfono" required>
+            </div>
+
+            <button class="metamask-connect-btn" onclick="processPhysicalPurchase()" style="background-color: var(--warning-color); margin-top: 20px;">
+                💳 Pagar y Confirmar Envío
+            </button>
+
+            <button class="close-btn" onclick="closePhysicalModal()">Cerrar</button>
+        </div>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.2.0/ethers.umd.min.js"></script> 
+<script src="./app.js"></script>
+<script>
+    async function loadBooksForPurchase() {
+        const container = document.getElementById('booksContainer');
+        
+        try {
+            const response = await fetch('./books.json');
+            if (!response.ok) throw new Error('No se pudo cargar books.json');
+            
+            const books = await response.json();
+            
+            if (books.length === 0) {
+                container.innerHTML = `
+                    <div class="no-books">
+                        <div class="no-books-icon">📭</div>
+                        <h3>No hay libros disponibles</h3>
+                        <p>Vuelve pronto para ver nuevos títulos.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            books.forEach(book => {
+                const hasDigital = book.priceEth && book.isDigital;
+                const hasPhysical = book.priceUsd && book.isPhysical;
+                
+                // Precio de prueba bajo para testing
+                const testPrice = 0.0001;
+                const displayPrice = book.priceEth || testPrice;
+                
+                html += `
+                    <div class="book-card-wrapper">
+                        <div class="book-card">
+                            ${hasDigital ? '<span class="badge">NFT</span>' : ''}
+                            ${hasPhysical && !hasDigital ? '<span class="badge physical">Físico</span>' : ''}
+                            
+                            <img src="${book.coverUrl}" alt="${book.title}" class="book-cover" 
+                                 onerror="this.src='https://via.placeholder.com/220x280?text=Sin+Portada'">
+                            
+                            <div class="book-info">
+                                <h3>${book.title}</h3>
+                                <p class="author">por ${book.author}</p>
+                                
+                                ${hasDigital ? `
+                                    <span class="price-tag">💎 ${displayPrice} ETH</span>
+                                ` : ''}
+                                
+                                ${hasPhysical ? `
+                                    <span class="price-tag physical">📦 $${book.priceUsd} USD</span>
+                                ` : ''}
+                                
+                                <div class="book-buttons">
+                                    ${hasDigital ? `
+                                        <button class="action-btn" onclick="buyBook(${book.id}, ${testPrice})">
+                                            🛒 Comprar Digital
+                                        </button>
+                                    ` : ''}
+                                    
+                                    ${hasPhysical ? `
+                                        <button class="action-btn physical" onclick="openPhysicalPurchase(${book.id}, '${book.title}', ${book.priceUsd})">
+                                            📦 Comprar Físico
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+        } catch (error) {
+            console.error('Error cargando libros:', error);
+            container.innerHTML = `
+                <div class="no-books">
+                    <div class="no-books-icon">⚠️</div>
+                    <h3>Error al cargar libros</h3>
+                    <p>Por favor, recarga la página.</p>
+                </div>
+            `;
+        }
+    }
+
+    function openPhysicalPurchase(bookId, title, priceUsd) {
+        // Guardar en la variable global de app.js
+        window.currentPhysicalBook = { id: bookId, title: title, price: priceUsd };
+        
+        document.getElementById('physicalBookTitle').innerHTML = `
+            <strong>${title}</strong><br>
+            <span style="color: #e8a050;">Precio: $${priceUsd} USD</span>
+        `;
+        document.getElementById('physicalModal').style.display = 'block';
+    }
+
+    // Cargar libros al iniciar
+    window.addEventListener('load', () => {
+        loadBooksForPurchase();
+    });
+
+    // Cerrar modales al hacer clic fuera
+    window.onclick = function(event) {
+        const walletModal = document.getElementById('walletModal');
+        const physicalModal = document.getElementById('physicalModal');
+        if (event.target === walletModal) {
+            walletModal.style.display = 'none';
+        }
+        if (event.target === physicalModal) {
+            physicalModal.style.display = 'none';
+        }
+    };
+</script>
+
+</body>
+</html>

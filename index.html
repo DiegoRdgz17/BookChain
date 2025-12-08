@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookChain - Librería Descentralizada</title>
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <title>BookChain - Tu Biblioteca Digital</title>
     
     <style>
         :root {
@@ -12,28 +11,24 @@
             --secondary-color: #2e3047; 
             --background-color: #f4f7f6;
             --card-background: #ffffff;
+            --success-color: #50e85d;
+            --warning-color: #e8a050;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--background-color);
             color: var(--secondary-color);
+            overflow-x: hidden;
         }
 
-        .nav-links a {
-            color: white !important; 
-            text-decoration: none;
-            margin-left: 20px;
-            padding: 5px;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:visited {
-            color: white !important; 
-        }
-        
+        /* Header */
         header {
             background-color: var(--secondary-color);
             color: white;
@@ -41,7 +36,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
         }
 
         .logo {
@@ -50,85 +50,390 @@
             color: var(--primary-color);
         }
 
+        .nav-links a {
+            color: white !important;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
         .metamask-btn {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 20px; 
-            border-radius: 2px;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+
+        .metamask-btn:hover {
+            transform: scale(1.05);
         }
 
         .metamask-btn img {
             width: 24px;
             height: 24px;
             margin-right: 10px;
-            object-fit: contain;
         }
 
-        .container {
-            width: 95%; 
-            max-width: 1300px; 
-            margin: 40px auto;
-        }
-
-        .book-grid {
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 15px; 
-        }
-
-        .book-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
+        /* Hero Section */
+        .hero {
+            margin-top: 70px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #1a1b2e 100%);
+            color: white;
+            padding: 80px 20px;
             text-align: center;
-            padding-bottom: 15px;
-            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .book-card img {
-            width: 90%; 
-            height: 150px; 
-            object-fit: contain; 
-            background-color: white;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%235d50e8' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #a8a4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            color: #b8b8d1;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .hero-btn {
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-btn.primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #7b6fec 100%);
+            color: white;
+            border: none;
+        }
+
+        .hero-btn.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(93, 80, 232, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Carousel Section */
+        .carousel-section {
+            padding: 60px 0;
+            background: linear-gradient(180deg, #1a1b2e 0%, var(--background-color) 100%);
+            overflow: hidden;
+        }
+
+        .carousel-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .carousel-title h2 {
+            font-size: 2em;
             margin-bottom: 10px;
         }
 
+        .carousel-title p {
+            color: #888;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 30px;
+            animation: scroll 30s linear infinite;
+            width: max-content;
+        }
+
+        .carousel-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .carousel-book {
+            flex-shrink: 0;
+            width: 180px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .carousel-book:hover {
+            transform: scale(1.1) rotate(-2deg);
+        }
+
+        .carousel-book img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-book .book-title {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--secondary-color);
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .features-title h2 {
+            font-size: 2.5em;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .features-title p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4em;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #7b6fec 100%);
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 80px 20px;
+            text-align: center;
+            background: var(--background-color);
+        }
+
+        .cta h2 {
+            font-size: 2.5em;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #7b6fec 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(93, 80, 232, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary-color);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.7;
+        }
+
+        footer .footer-links {
+            margin-top: 20px;
+        }
+
+        footer .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        /* Modal */
         .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 10; 
+            display: none;
+            position: fixed;
+            z-index: 2000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7); 
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            background-color: #333940; 
-            margin: 15% auto; 
+            background-color: #333940;
+            margin: 15% auto;
             padding: 30px;
-            border: 1px solid #555;
             max-width: 400px;
-            border-radius: 10px;
+            border-radius: 15px;
             text-align: center;
             color: white;
+            animation: fadeInUp 0.3s ease-out;
         }
 
         .metamask-connect-btn {
-            background-color: #E27625; 
+            background-color: #E27625;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
             margin-top: 20px;
@@ -136,17 +441,39 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            box-sizing: border-box; 
         }
-        
+
         .close-btn {
             margin-top: 15px;
-            background-color: transparent;
-            border: 1px solid #888;
+            background: transparent;
+            border: 1px solid #666;
             color: #888;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+
+            .hero p {
+                font-size: 1em;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .features-title h2 {
+                font-size: 1.8em;
+            }
+
+            .stat-item h3 {
+                font-size: 2em;
+            }
         }
     </style>
 </head>
@@ -155,269 +482,190 @@
     <header>
         <div class="logo">📚 BookChain</div>
         <nav class="nav-links">
-            <a href="#">Tienda</a>
-            <a href="#">Mi Biblioteca</a>
-            <a href="#">Autores</a>
+            <a href="index.html">Inicio</a>
+            <a href="compra.html">Comprar</a>
+            <a href="renta.html">Rentar</a>
+            <a href="library.html">Mi Biblioteca</a>
+            <a href="transacciones.html">Transacciones</a>
         </nav>
         <div id="walletArea">
             <button class="metamask-btn" onclick="openModal()">
-                <img src="metamask_logo.png" alt="MetaMask Logo"> 
+                <img src="metamask_logo.png" alt="MetaMask"> 
                 Conectar Billetera
             </button>
         </div>
     </header>
 
-    <div class="container">
-        <h2>Catálogo de Libros NFT</h2>
-
-        <div class="book-grid">
-            <div class="book-card">
-                <img src="book_cover_1.png" alt="Portada del Libro">
-                <div class="book-info">
-                    <h3>El Contrato del Futuro</h3>
-                    <p>Autor: Alice Johnson</p>
-                    <div class="price-tag">0.05 ETH (NFT)</div>
-                    <button class="action-btn">Comprar Digital</button>
-                    <button class="action-btn" style="background-color: #e8a050;">Rentar (0.01 ETH)</button>
-                </div>
-            </div>
-
-            <div class="book-card">
-                <img src="book_cover_2.png" alt="Portada del Libro">
-                <div class="book-info">
-                    <h3>Desarrollo Web3</h3>
-                    <p>Autor: Bob Smith</p>
-                    <div class="price-tag">25 USDT (Físico)</div>
-                    <button class="action-btn">Comprar Físico</button>
-                </div>
-            </div>
-            
-            <div class="book-card">
-                <img src="book_cover_3.png" alt="Portada del Libro">
-                <div class="book-info">
-                    <h3>Solidity Avanzado</h3>
-                    <p>Autor: Carol Williams</p>
-                    <div class="price-tag">0.08 ETH (NFT)</div>
-                    <button class="action-btn">Comprar Digital</button>
-                    <button class="action-btn" style="background-color: #e8a050;">Rentar (0.015 ETH)</button>
-                </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1> Bienvenido a BookChain</h1>
+            <p>Tu biblioteca digital descentralizada. Compra, renta y colecciona libros como NFTs en la blockchain.</p>
+            <div class="hero-buttons">
+                <a href="compra.html" class="hero-btn primary">🛒 Explorar Catálogo</a>
+                <a href="renta.html" class="hero-btn secondary">📖 Rentar Libros</a>
             </div>
         </div>
-    </div>
-    
+    </section>
+
+    <!-- Carousel Section -->
+    <section class="carousel-section">
+        <div class="carousel-title">
+            <h2>📖 Nuestra Colección</h2>
+            <p>Descubre los títulos disponibles en nuestra biblioteca</p>
+        </div>
+        <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+                <!-- Los libros se cargan dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-title">
+            <h2>¿Por qué elegir BookChain?</h2>
+            <p>La revolución de los libros digitales está aquí</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Propiedad Real</h3>
+                <p>Cada libro que compras es un NFT único que te pertenece. Puedes venderlo, transferirlo o conservarlo para siempre.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Renta Económica</h3>
+                <p>¿Solo quieres leer una vez? Renta libros por 7 días a una fracción del precio de compra.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Descentralizado</h3>
+                <p>Sin intermediarios. Tus libros están seguros en la blockchain de Ethereum (Sepolia).</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📦</div>
+                <h3>Libros Físicos</h3>
+                <p>¿Prefieres el papel? También ofrecemos envío de libros físicos a tu domicilio.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🦊</div>
+                <h3>Fácil de Usar</h3>
+                <p>Conecta tu MetaMask y comienza a explorar. Sin registros complicados.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📜</div>
+                <h3>Historial Completo</h3>
+                <p>Todas tus transacciones quedan registradas. Accede a tu historial cuando quieras.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3 id="statBooks">11+</h3>
+                <p>Libros Disponibles</p>
+            </div>
+            <div class="stat-item">
+                <h3>🔒</h3>
+                <p>Blockchain Segura</p>
+            </div>
+            <div class="stat-item">
+                <h3>7</h3>
+                <p>Días de Renta</p>
+            </div>
+            <div class="stat-item">
+                <h3>24/7</h3>
+                <p>Acceso Inmediato</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <h2>¿Listo para comenzar?</h2>
+        <p>Conecta tu billetera y explora nuestra colección de libros digitales.</p>
+        <a href="compra.html" class="cta-btn">
+            🚀 Comenzar Ahora
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>©DiegoRod - 2025 BookChain - Tu Biblioteca Digital Descentralizada</p>
+        <div class="footer-links">
+            <a href="compra.html">Comprar</a>
+            <a href="renta.html">Rentar</a>
+            <a href="library.html">Mi Biblioteca</a>
+            <a href="transacciones.html">Transacciones</a>
+        </div>
+    </footer>
+
+    <!-- Modal -->
     <div id="walletModal" class="modal">
         <div class="modal-content">
-            <h2>Conectar Billetera</h2>
-            <p>Selecciona tu billetera para interactuar con la librería NFT.</p>
+            <h2>🦊 Conectar Billetera</h2>
+            <p style="color: #aaa; margin-top: 10px;">Conecta tu MetaMask para acceder a todas las funciones.</p>
             
             <button class="metamask-connect-btn" onclick="connectMetaMask()">
-                <img src="metamask_logo.png" alt="MetaMask Logo" style="width: 24px; height: 24px; margin-right: 10px;">
+                <img src="metamask_logo.png" alt="MetaMask" style="width: 24px; height: 24px; margin-right: 10px;">
                 Conectar con MetaMask
             </button>
 
             <button class="close-btn" onclick="closeModal()">Cerrar</button>
         </div>
     </div>
-    
-    <script>
-    // --- VARIABLES DE CONTRATO (PEGA AQUÍ TUS VALORES REALES DE REMIX) ---
-    const CONTRACT_ADDRESS = "0xCc267A25f9d0EE7c925bce6a91281b1B87549AB0"; 
 
-    const CONTRACT_ABI = [
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "buyBook",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_tokenId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_durationInSeconds",
-				"type": "uint256"
-			}
-		],
-		"name": "rentBook",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_bookNFTAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address payable",
-				"name": "_authorAddress",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "authorAddress",
-		"outputs": [
-			{
-				"internalType": "address payable",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "bookNFTContract",
-		"outputs": [
-			{
-				"internalType": "contract BookNFT",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "purchasePrice",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "rentalEndTimes",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "rentalPrice",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
-]
-    
-    function openModal() {
-        document.getElementById('walletModal').style.display = 'block';
-    }
-
-    function closeModal() {
-        document.getElementById('walletModal').style.display = 'none';
-    }
-
-    async function connectMetaMask() {
-        const walletArea = document.getElementById('walletArea');
-        
-        if (!window.ethereum) {
-            alert('¡MetaMask no está instalado! Instálalo para usar esta App.');
-            return;
-        }
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.2.0/ethers.umd.min.js"></script>
+<script src="./app.js"></script>
+<script>
+    // Cargar libros para el carrusel
+    async function loadCarousel() {
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const accounts = await provider.send("eth_requestAccounts", []);
-            const userAddress = accounts[0]; 
-
-            const displayAddress = userAddress.substring(0, 6) + '...' + userAddress.substring(userAddress.length - 4);
+            const response = await fetch('./books.json');
+            const books = await response.json();
             
-            walletArea.innerHTML = `
-                <span style="
-                    background-color: #50e85d; /* Fondo verde para el éxito */
-                    color: white; 
-                    padding: 8px 20px; 
-                    border-radius: 2px; 
-                    font-weight: bold;
-                    display: inline-flex;
-                    align-items: center;
-                    font-size: 0.9em;
-                ">
-                    ✅ CONECTADO: ${displayAddress}
-                </span>
-            `;
+            const track = document.getElementById('carouselTrack');
             
-            closeModal();
-            window.userProvider = provider;
-            window.userAddress = userAddress;
-            window.signer = provider.getSigner();
-
-        } catch (error) {
-            console.error("Error de conexión:", error);
-            closeModal();
-        }
-    }
-    
-    async function buyBook(tokenId, priceEth) {
-        if (!window.signer) {
-            alert("Por favor, conéctate a tu billetera primero.");
-            openModal();
-            return;
-        }
-
-        try {
-            const priceWei = ethers.utils.parseEther(priceEth.toString());
-            const bookStoreContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, window.signer);
+            // Duplicar los libros para crear efecto infinito
+            const allBooks = [...books, ...books];
             
-            const tx = await bookStoreContract.buyBook(
-                tokenId, 
-                { value: priceWei }
-            );
+            let html = '';
+            allBooks.forEach(book => {
+                html += `
+                    <div class="carousel-book" onclick="window.location.href='compra.html'">
+                        <img src="${book.coverUrl}" alt="${book.title}" 
+                             onerror="this.src='https://via.placeholder.com/180x270?text=Sin+Portada'">
+                        <div class="book-title">${book.title}</div>
+                    </div>
+                `;
+            });
             
-            alert(`Transacción enviada. Hash: ${tx.hash}`);
-            await tx.wait(); 
-            alert("¡Compra exitosa! Revisa tu billetera.");
+            track.innerHTML = html;
+            
+            // Actualizar estadística de libros
+            document.getElementById('statBooks').textContent = books.length + '+';
             
         } catch (error) {
-            console.error("Error de transacción:", error);
-            alert("Error al intentar comprar el libro. Revisa la consola.");
+            console.error('Error cargando carrusel:', error);
         }
     }
-    </script>
+
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+        const modal = document.getElementById('walletModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    // Inicializar
+    window.addEventListener('load', () => {
+        loadCarousel();
+    });
+</script>
+
 </body>
 </html>

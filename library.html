@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookChain</title>
+    
+    <style>
+        :root {
+            --primary-color: #5d50e8; 
+            --secondary-color: #2e3047; 
+            --background-color: #f4f7f6;
+            --card-background: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--secondary-color);
+        }
+
+        .nav-links a {
+            color: white !important; 
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:visited {
+            color: white !important; 
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .metamask-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 20px; 
+            border-radius: 2px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .metamask-btn img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+
+        .container {
+            width: 95%; 
+            max-width: 1300px; 
+            margin: 40px auto;
+        }
+
+        .book-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 15px; 
+        }
+
+        .book-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            text-align: center;
+            padding-bottom: 15px;
+            transition: transform 0.2s;
+        }
+
+        .book-card img {
+            width: 90%; 
+            height: 150px; 
+            object-fit: contain; 
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 10; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); 
+        }
+
+        .modal-content {
+            background-color: #333940; 
+            margin: 15% auto; 
+            padding: 30px;
+            border: 1px solid #555;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .metamask-connect-btn {
+            background-color: #E27625; 
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box; 
+        }
+        
+        .close-btn {
+            margin-top: 15px;
+            background-color: transparent;
+            border: 1px solid #888;
+            color: #888;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .book-list-header {
+            display: flex; /* Habilita el formato de fila/columna */
+            justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 2px solid var(--primary-color);
+    background-color: #f0f0f0;
+    margin-top: 20px;
+}
+
+.book-list-item {
+    display: flex; /* Habilita el formato de fila/columna para los datos */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    background-color: white;
+}
+
+.book-list-item:hover {
+    background-color: #f9f9f9;
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">📚 BookChain</div>
+        <nav class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="library.html" style="color: #5d50e8 !important;">Biblioteca</a>
+        </nav>
+        <div id="walletArea">
+            <button class="metamask-btn" onclick="openModal()">
+                <img src="metamask_logo.png" alt="MetaMask Logo"> 
+                Conectar Billetera
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+    <h2>📚 Mi Catálogo</h2>
+    <p>Esta tabla muestra todos los libros del catálogo con opciones de redireccionamiento para compra o renta.</p>
+    
+    <div id="userBooksContainer">
+        <p>Cargando lista...</p>
+        </div>
+    </div>
+    
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Conectar Billetera</h2>
+            <p>Selecciona tu billetera para interactuar con la librería NFT.</p>
+            
+            <button class="metamask-connect-btn" onclick="connectMetaMask()">
+                <img src="metamask_logo.png" alt="MetaMask Logo" style="width: 24px; height: 24px; margin-right: 10px;">
+                Conectar con MetaMask
+            </button>
+
+            <button class="close-btn" onclick="closeModal()">Cerrar</button>
+        </div>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.2.0/ethers.umd.min.js"></script> 
+    <script type="module">
+        import * as App from './app.js';
+        
+        window.addEventListener('load', async () => {
+            await App.loadBookData();
+            App.loadUserLibrary();
+        });
+    </script>
+</body>
+</html>

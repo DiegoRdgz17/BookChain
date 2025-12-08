@@ -1,0 +1,100 @@
+[
+  {
+    "id": 0,
+    "title": "Maze Runner: Correr o Morir",
+    "author": "James Dashner",
+    "priceEth": 0.05,
+    "rentPriceEth": 0.01,
+    "isDigital": true,
+    "coverUrl": "Mazerunner1.png"
+  },
+  {
+    "id": 1,
+    "title": "Maze Runner: Prueba de Fuego",
+    "author": "James Dashner",
+    "priceEth": 0.05,
+    "rentPriceEth": 0.01,
+    "isDigital": true,
+    "coverUrl": "MazeRunner2.png"
+  },
+  {
+    "id": 2,
+    "title": "Maze Runner: La Cura Mortal",
+    "author": "James Dashner",
+    "priceEth": 0.06,
+    "rentPriceEth": 0.015,
+    "isDigital": true,
+    "coverUrl": "MazeRunner3.png"
+  },
+  {
+    "id": 3,
+        "title": "Solidity Avanzado",
+    "author": "Carol Williams",
+    "priceEth": 0.08,
+    "rentPriceEth": 0.015,
+    "isDigital": true,
+    "coverUrl": "book_cover_3.png"
+  },
+  {
+    "id": 4,
+        "title": "Los Hornos de Hitler",
+    "author": "Olga Lengyel",
+    "priceEth": 0.04,
+    "rentPriceEth": 0.01,
+    "isDigital": true,
+    "coverUrl": "hornos.png"
+  },
+  {
+    "id": 5,
+    "title": "El Contrato del Futuro",
+    "author": "Alice Johnson",
+    "priceEth": 0.05,
+    "rentPriceEth": 0.01,
+    "isDigital": true,
+    "coverUrl": "book_cover_1.png"
+  },
+  {
+    "id": 6,
+        "title": "Hábitos Atómicos",
+    "author": "James Clear",
+    "priceEth": 0.1,
+    "rentPriceEth": 0.03,
+    "isDigital": true,
+    "coverUrl": "Habitosatomicos.png"
+  },
+  {
+    "id": 7,
+    "title": "Desarrollo Web3",
+    "author": "Bob Smith",
+    "priceUsd": 25,
+    "isPhysical": true,
+    "coverUrl": "book_cover_2.png"
+  },
+  {
+    "id": 8,
+    "title": "Los Juegos del Hambre",
+    "author": "Suzanne Collins",
+    "priceEth": 0.07,
+    "rentPriceEth": 0.02,
+    "isDigital": true,
+    "coverUrl": "Losjuegos.png"
+  },
+  {
+    "id": 9,
+    "title": "Los Juegos del Hambre: En Llamas",
+    "author": "Suzanne Collins",
+    "priceEth": 0.07,
+    "rentPriceEth": 0.02,
+    "isDigital": true,
+    "coverUrl": "Losjuegos2.png"
+  },
+  {
+    "id": 10,
+    "title": "Los Juegos del Hambre: Sinsajo",
+    "author": "Suzanne Collins",
+    "priceEth": 0.08,
+    "rentPriceEth": 0.025,
+    "isDigital": true,
+    "coverUrl": "Losjuegos3.png"
+  }
+]
