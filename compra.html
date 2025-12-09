@@ -315,7 +315,9 @@
         <div class="logo">📚 BookChain</div>
         <nav class="nav-links">
             <a href="index.html">Inicio</a>
-            <a href="compra.html" style="color: #5d50e8 !important;">Compra</a>
+            <a href="compra.html" style="color: #50e85d !important;">Comprar</a>
+            <a href="transacciones.html">Transacciones</a>
+
         </nav>
         <div id="walletArea">
             <button class="metamask-btn" onclick="openModal()">
@@ -403,10 +405,6 @@
                 const hasDigital = book.priceEth && book.isDigital;
                 const hasPhysical = book.priceUsd && book.isPhysical;
                 
-                // Precio de prueba bajo para testing
-                const testPrice = 0.0001;
-                const displayPrice = book.priceEth || testPrice;
-                
                 html += `
                     <div class="book-card-wrapper">
                         <div class="book-card">
@@ -421,7 +419,7 @@
                                 <p class="author">por ${book.author}</p>
                                 
                                 ${hasDigital ? `
-                                    <span class="price-tag">💎 ${displayPrice} ETH</span>
+                                    <span class="price-tag">💎 ${book.priceEth} ETH</span>
                                 ` : ''}
                                 
                                 ${hasPhysical ? `
@@ -430,7 +428,7 @@
                                 
                                 <div class="book-buttons">
                                     ${hasDigital ? `
-                                        <button class="action-btn" onclick="buyBook(${book.id}, ${testPrice})">
+                                        <button class="action-btn" onclick="buyBook(${book.id}, ${book.priceEth})">
                                             🛒 Comprar Digital
                                         </button>
                                     ` : ''}

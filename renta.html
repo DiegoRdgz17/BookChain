@@ -329,7 +329,7 @@
         <nav class="nav-links">
             <a href="index.html">Inicio</a>
             <a href="renta.html" style="color: #e8a050 !important;">Rentar</a>
-
+            <a href="transacciones.html">Transacciones</a>
         </nav>
         <div id="walletArea">
             <button class="metamask-btn" onclick="openModal()">
@@ -415,10 +415,6 @@
             let html = '';
             
             rentableBooks.forEach(book => {
-                // Precio de prueba bajo para testing
-                const testRentPrice = 0.00005;
-                const displayRentPrice = book.rentPriceEth || testRentPrice;
-                
                 // Calcular ahorro vs compra
                 const savings = book.priceEth ? Math.round((1 - (book.rentPriceEth / book.priceEth)) * 100) : 0;
                 
@@ -436,7 +432,7 @@
                                 <p class="author">por ${book.author}</p>
                                 
                                 <div class="price-container">
-                                    <span class="rent-price">📖 ${testRentPrice} ETH</span>
+                                    <span class="rent-price">📖 ${book.rentPriceEth} ETH</span>
                                     <span class="rent-duration">Acceso por 7 días</span>
                                     ${book.priceEth ? `
                                         <span class="buy-price-small">Compra: ${book.priceEth} ETH</span>
@@ -444,7 +440,7 @@
                                 </div>
                                 
                                 <div class="book-buttons">
-                                    <button class="action-btn" onclick="confirmRent(${book.id}, '${book.title}', ${testRentPrice})">
+                                    <button class="action-btn" onclick="confirmRent(${book.id}, '${book.title}', ${book.rentPriceEth})">
                                         📖 Rentar Ahora
                                     </button>
                                 </div>
@@ -486,8 +482,11 @@
         `;
         
         document.getElementById('confirmRentBtn').onclick = function() {
+            // Guardar los datos antes de cerrar el modal
+            const bookToRent = { ...currentRentBook };
             closeRentConfirmModal();
-            rentBook(currentRentBook.id, currentRentBook.price);
+            // Llamar a rentBook con los datos guardados
+            rentBook(bookToRent.id, bookToRent.price);
         };
         
         document.getElementById('rentConfirmModal').style.display = 'block';

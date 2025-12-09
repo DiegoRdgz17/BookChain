@@ -1,12 +1,85 @@
-const BOOKSTORE_ADDRESS = "0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8"; 
-const BOOKNFT_ADDRESS = "0xd9145CCE52D386f254917e481eB44e9943F39138";
+const BOOKSTORE_ADDRESS = "0xB72c10C13A8056F7557aB3C5c0b6A350A9193994"; 
+const BOOKNFT_ADDRESS = "0xc3928784b90BC37484c0125d718AB89C0813F339";
 
 const CONTRACT_ABI = [
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_bookNFTAddress",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
 				"internalType": "uint256",
-				"name": "_tokenId",
+				"name": "bookId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "buyer",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "BookPurchased",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "bookId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "expiryDate",
+				"type": "uint256"
+			}
+		],
+		"name": "BookRented",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_bookId",
 				"type": "uint256"
 			}
 		],
@@ -19,12 +92,45 @@ const CONTRACT_ABI = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "_tokenId",
+				"name": "_bookId",
+				"type": "uint256"
+			}
+		],
+		"name": "extendRental",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "bookId",
 				"type": "uint256"
 			},
 			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
 				"internalType": "uint256",
-				"name": "_durationInSeconds",
+				"name": "newExpiryDate",
+				"type": "uint256"
+			}
+		],
+		"name": "RentalExtended",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_bookId",
 				"type": "uint256"
 			}
 		],
@@ -34,27 +140,42 @@ const CONTRACT_ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_bookNFTAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address payable",
-				"name": "_authorAddress",
-				"type": "address"
-			}
-		],
+		"inputs": [],
+		"name": "withdraw",
+		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "constructor"
+		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "authorAddress",
+		"name": "authorRoyaltyPercent",
 		"outputs": [
 			{
-				"internalType": "address payable",
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "bookBuyers",
+		"outputs": [
+			{
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
@@ -76,8 +197,171 @@ const CONTRACT_ABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_bookId",
+				"type": "uint256"
+			}
+		],
+		"name": "getBuyersCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_bookId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			}
+		],
+		"name": "getRentalExpiry",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_bookId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			}
+		],
+		"name": "hasAccess",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "hasPurchased",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_bookId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			}
+		],
+		"name": "hasUserPurchased",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_bookId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			}
+		],
+		"name": "isRentalActive",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
-		"name": "purchasePrice",
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "rentalExpiry",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -96,7 +380,7 @@ const CONTRACT_ABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "rentalEndTimes",
+		"name": "totalPurchases",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -108,8 +392,14 @@ const CONTRACT_ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "rentalPrice",
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "totalRentals",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -120,19 +410,784 @@ const CONTRACT_ABI = [
 		"stateMutability": "view",
 		"type": "function"
 	}
-];
+]
 
 const BOOKNFT_ABI = [
-    "function ownerOf(uint256 tokenId) public view returns (address)",
-    "function approve(address to, uint256 tokenId) public",
-    "function setApprovalForAll(address operator, bool approved) public",
-    "function isApprovedForAll(address owner, address operator) public view returns (bool)",
-    "function transferFrom(address from, address to, uint256 tokenId) public"
-];
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_title",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_author",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_purchasePrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_rentalPrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_uri",
+				"type": "string"
+			}
+		],
+		"name": "createBook",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "ERC721IncorrectOwner",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "ERC721InsufficientApproval",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "approver",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidApprover",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidOperator",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidOwner",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "receiver",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidReceiver",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidSender",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "ERC721NonexistentToken",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "OwnableInvalidOwner",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "OwnableUnauthorizedAccount",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "approved",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "approved",
+				"type": "bool"
+			}
+		],
+		"name": "ApprovalForAll",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_fromTokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_toTokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "BatchMetadataUpdate",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "title",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "author",
+				"type": "string"
+			}
+		],
+		"name": "BookCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "purchasePrice",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "rentalPrice",
+				"type": "uint256"
+			}
+		],
+		"name": "BookPriceUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "MetadataUpdate",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "safeTransferFrom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "data",
+				"type": "bytes"
+			}
+		],
+		"name": "safeTransferFrom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "approved",
+				"type": "bool"
+			}
+		],
+		"name": "setApprovalForAll",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_purchasePrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_rentalPrice",
+				"type": "uint256"
+			}
+		],
+		"name": "updateBookPrices",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "books",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "title",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "author",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "purchasePrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rentalPrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "exists",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "getApproved",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "getBookInfo",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "title",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "author",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "purchasePrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rentalPrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "exists",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "isApprovedForAll",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "ownerOf",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes4",
+				"name": "interfaceId",
+				"type": "bytes4"
+			}
+		],
+		"name": "supportsInterface",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "tokenURI",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalBooks",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
 
 const SEPOLIA_CHAIN_ID = '0xaa36a7';
 
 let ALL_BOOKS = [];
+
+
+function saveTransaction(txData) {
+    if (!window.userAddress) {
+        console.warn('No hay dirección de usuario para guardar transacción');
+        return;
+    }
+    
+    const key = 'bookchain_transactions_' + window.userAddress.toLowerCase();
+    const saved = localStorage.getItem(key);
+    const transactions = saved ? JSON.parse(saved) : [];
+    
+    transactions.push({
+        ...txData,
+        date: new Date().toISOString()
+    });
+    
+    localStorage.setItem(key, JSON.stringify(transactions));
+    console.log('✅ Transacción guardada:', txData);
+}
+
+// Exponer globalmente
+window.saveTransaction = saveTransaction;
 
 // ============================================
 // SISTEMA DE NOTIFICACIONES
@@ -589,7 +1644,7 @@ async function connectMetaMaskSilent() {
 }
 
 
-// ✅ CORREGIDO: Usar BOOKSTORE_ADDRESS en lugar de CONTRACT_ADDRESS
+// ✅ SISTEMA NUEVO: No transfiere NFT, solo registra acceso
 async function buyBook(tokenId, priceEth) {
     if (!window.signer) {
         showError('Billetera no conectada', 'Por favor, conéctate a tu billetera primero.');
@@ -600,14 +1655,12 @@ async function buyBook(tokenId, priceEth) {
     try {
         showLoading('Preparando compra...', 'Verificando disponibilidad del libro');
         
-        const bookNFTContract = new ethers.Contract(BOOKNFT_ADDRESS, BOOKNFT_ABI, window.signer);
         const bookStoreContract = new ethers.Contract(BOOKSTORE_ADDRESS, CONTRACT_ABI, window.signer);
-
-        const owner = await bookNFTContract.ownerOf(tokenId);
-        const isApproved = await bookNFTContract.isApprovedForAll(owner, BOOKSTORE_ADDRESS);
-
-        if (!isApproved) {
-            showError('Libro no disponible', 'Este libro no ha sido aprobado para venta. Contacta al administrador.');
+        
+        // Verificar si ya compró este libro
+        const alreadyPurchased = await bookStoreContract.hasUserPurchased(tokenId, window.userAddress);
+        if (alreadyPurchased) {
+            showError('Ya tienes este libro', 'Ya compraste este libro anteriormente. Puedes acceder desde tu biblioteca.');
             return;
         }
 
@@ -617,10 +1670,10 @@ async function buyBook(tokenId, priceEth) {
         
         const tx = await bookStoreContract.buyBook(tokenId, { 
             value: priceWei,
-            gasLimit: 300000 
+            gasLimit: 200000 
         }); 
         
-        showLoading('Procesando compra...', 'Esperando confirmación en la blockchain');
+        showLoading('Procesando compra...', 'Registrando tu acceso al libro');
         
         // Guardar transacción como pendiente
         if (typeof window.saveTransaction === 'function') {
@@ -638,7 +1691,7 @@ async function buyBook(tokenId, priceEth) {
         // Actualizar estado a success
         updateTransactionStatus(tx.hash, 'success');
         
-        showSuccess('¡Compra realizada!', 'El NFT del libro ahora es tuyo', { hash: tx.hash, autoClose: 5000 });
+        showSuccess('¡Compra realizada!', 'El libro ahora está en tu biblioteca', { hash: tx.hash, autoClose: 5000 });
         
     } catch (error) {
         console.error("Error de transacción:", error);
@@ -647,6 +1700,8 @@ async function buyBook(tokenId, priceEth) {
             showError('Transacción cancelada', 'Has rechazado la transacción en MetaMask');
         } else if (error.message.includes('insufficient funds')) {
             showError('Fondos insuficientes', 'No tienes suficiente ETH en tu wallet');
+        } else if (error.message.includes('Ya compraste')) {
+            showError('Ya tienes este libro', 'Ya compraste este libro anteriormente');
         } else if (error.reason) {
             showError('Error del contrato', error.reason);
         } else {
@@ -656,6 +1711,7 @@ async function buyBook(tokenId, priceEth) {
 }
 
 // ✅ CORREGIDO: Usar BOOKSTORE_ADDRESS en lugar de CONTRACT_ADDRESS
+// ✅ SISTEMA NUEVO: Renta simplificada sin parámetro de duración
 async function rentBook(tokenId, priceEth) {
     if (!window.signer) {
         showError('Billetera no conectada', 'Por favor, conéctate a tu billetera primero.');
@@ -664,25 +1720,35 @@ async function rentBook(tokenId, priceEth) {
     }
 
     try {
-        showLoading('Preparando renta...', 'Configurando acceso por 7 días');
-        
-        const durationSeconds = 7 * 24 * 60 * 60;
-        const priceWei = ethers.utils.parseEther(priceEth.toString());
+        showLoading('Preparando renta...', 'Verificando disponibilidad');
         
         const bookStoreContract = new ethers.Contract(BOOKSTORE_ADDRESS, CONTRACT_ABI, window.signer);
         
+        // Verificar si ya compró este libro
+        const alreadyPurchased = await bookStoreContract.hasUserPurchased(tokenId, window.userAddress);
+        if (alreadyPurchased) {
+            showError('Ya tienes este libro', 'Ya compraste este libro. No necesitas rentarlo.');
+            return;
+        }
+        
+        // Verificar si ya tiene renta activa
+        const hasActiveRental = await bookStoreContract.isRentalActive(tokenId, window.userAddress);
+        if (hasActiveRental) {
+            showError('Renta activa', 'Ya tienes una renta activa de este libro. Puedes extenderla si lo deseas.');
+            return;
+        }
+
+        const priceWei = ethers.utils.parseEther(priceEth.toString());
+        
         showWalletPending('Confirma en MetaMask', 'Aprueba la transacción en tu billetera');
         
-        const tx = await bookStoreContract.rentBook(
-            tokenId, 
-            durationSeconds,
-            { 
-                value: priceWei,
-                gasLimit: 200000 
-            }
-        );
+        // El nuevo contrato no necesita parámetro de duración (siempre 7 días)
+        const tx = await bookStoreContract.rentBook(tokenId, { 
+            value: priceWei,
+            gasLimit: 150000 
+        });
         
-        showLoading('Procesando renta...', 'Esperando confirmación en la blockchain');
+        showLoading('Procesando renta...', 'Activando tu acceso por 7 días');
         
         // Guardar transacción como pendiente
         if (typeof window.saveTransaction === 'function') {
@@ -708,6 +1774,10 @@ async function rentBook(tokenId, priceEth) {
         
         if (error.code === 4001) {
             showError('Transacción cancelada', 'Has rechazado la transacción en MetaMask');
+        } else if (error.message.includes('Ya compraste')) {
+            showError('Ya tienes este libro', 'Ya compraste este libro, no necesitas rentarlo');
+        } else if (error.message.includes('renta activa')) {
+            showError('Renta activa', 'Ya tienes una renta activa de este libro');
         } else if (error.reason) {
             showError('Error del contrato', error.reason);
         } else {
@@ -734,6 +1804,79 @@ function updateTransactionStatus(txHash, newStatus) {
         }
     }
 }
+
+// ============================================
+// FUNCIONES DE VERIFICACIÓN DE ACCESO
+// ============================================
+
+/**
+ * Verifica si el usuario tiene acceso a un libro (comprado o rentado)
+ */
+async function checkBookAccess(bookId) {
+    if (!window.signer || !window.userAddress) return { hasAccess: false, type: null };
+    
+    try {
+        const bookStoreContract = new ethers.Contract(BOOKSTORE_ADDRESS, CONTRACT_ABI, window.signer);
+        
+        const purchased = await bookStoreContract.hasUserPurchased(bookId, window.userAddress);
+        if (purchased) {
+            return { hasAccess: true, type: 'purchased' };
+        }
+        
+        const rentalActive = await bookStoreContract.isRentalActive(bookId, window.userAddress);
+        if (rentalActive) {
+            const expiry = await bookStoreContract.getRentalExpiry(bookId, window.userAddress);
+            return { 
+                hasAccess: true, 
+                type: 'rented',
+                expiryDate: new Date(expiry.toNumber() * 1000)
+            };
+        }
+        
+        return { hasAccess: false, type: null };
+        
+    } catch (error) {
+        console.error('Error verificando acceso:', error);
+        return { hasAccess: false, type: null };
+    }
+}
+
+/**
+ * Obtiene todos los libros que el usuario ha comprado
+ */
+async function getUserPurchasedBooks(maxBookId = 20) {
+    if (!window.signer || !window.userAddress) return [];
+    
+    try {
+        const bookStoreContract = new ethers.Contract(BOOKSTORE_ADDRESS, CONTRACT_ABI, window.signer);
+        const purchasedIds = await bookStoreContract.getUserPurchasedBooks(window.userAddress, maxBookId);
+        return purchasedIds.map(id => id.toNumber());
+    } catch (error) {
+        console.error('Error obteniendo libros comprados:', error);
+        return [];
+    }
+}
+
+/**
+ * Obtiene todas las rentas activas del usuario
+ */
+async function getUserActiveRentals(maxBookId = 20) {
+    if (!window.signer || !window.userAddress) return [];
+    
+    try {
+        const bookStoreContract = new ethers.Contract(BOOKSTORE_ADDRESS, CONTRACT_ABI, window.signer);
+        const rentalIds = await bookStoreContract.getUserActiveRentals(window.userAddress, maxBookId);
+        return rentalIds.map(id => id.toNumber());
+    } catch (error) {
+        console.error('Error obteniendo rentas activas:', error);
+        return [];
+    }
+}
+
+// Exponer funciones globalmente
+window.checkBookAccess = checkBookAccess;
+window.getUserPurchasedBooks = getUserPurchasedBooks;
+window.getUserActiveRentals = getUserActiveRentals;
 
 async function processPhysicalPurchase() {
     const name = document.getElementById('buyerName')?.value || '';
